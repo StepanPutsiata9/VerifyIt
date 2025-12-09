@@ -1,8 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 import { useScan } from '@/features/scanning';
-import { AppLogo, Cross } from '@/features/shared';
+import { AppLogo, Cross, ExpirationBanner, GoodBanner, WarningBanner } from '@/features/shared';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Answer() {
@@ -21,82 +22,103 @@ export default function Answer() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.appBar}>
-        <View></View>
-        <View style={styles.logoView}>
-          <AppLogo />
-          <Text style={styles.appTitle}>VerifyIt</Text>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.appBar}>
+          <View></View>
+          <View style={styles.logoView}>
+            <AppLogo />
+            <Text style={styles.appTitle}>VerifyIt</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => router.navigate('/(root)/(tabs)/home')}
+          >
+            <Cross />
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.backBtn}
-          onPress={() => router.navigate('/(root)/(tabs)/home')}
-        >
-          <Cross />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.title}>Информация о документе</Text>
+        <Text style={styles.title}>Информация о документе</Text>
 
-      <View style={styles.content}>
-        {scanningData ? (
-          <>
-            <Text style={styles.fieldText}>
-              <Text style={styles.fieldLabel}>Название: </Text>
-              {scanningData.name}
-            </Text>
+        <View style={styles.content}>
+          {scanningData ? (
+            <>
+              <View>
+                <Text style={styles.fieldText}>
+                  <Text style={styles.fieldLabel}>Название: </Text>
+                  {scanningData.name}
+                </Text>
 
-            <Text style={styles.fieldText}>
-              <Text style={styles.fieldLabel}>Тип документа: </Text>
-              {getDocumentTypeName(scanningData.type)}
-            </Text>
+                <Text style={styles.fieldText}>
+                  <Text style={styles.fieldLabel}>Тип документа: </Text>
+                  {getDocumentTypeName(scanningData.type)}
+                </Text>
 
-            <Text style={styles.fieldText}>
-              <Text style={styles.fieldLabel}>Автор: </Text>
-              {scanningData.author}
-            </Text>
+                <Text style={styles.fieldText}>
+                  <Text style={styles.fieldLabel}>Автор: </Text>
+                  {scanningData.author}
+                </Text>
 
-            <Text style={styles.fieldText}>
-              <Text style={styles.fieldLabel}>Создан: </Text>
-              {formatDate(scanningData.createdAt)}
-            </Text>
+                <Text style={styles.fieldText}>
+                  <Text style={styles.fieldLabel}>Создан: </Text>
+                  {formatDate(scanningData.createdAt)}
+                </Text>
 
-            <Text style={styles.fieldText}>
-              <Text style={styles.fieldLabel}>Истекает: </Text>
-              {formatDate(scanningData.expirationDate)}
-            </Text>
-
-            <View
-              style={[
-                styles.statusBadge,
-                // eslint-disable-next-line react-native/no-inline-styles
-                {
-                  backgroundColor: scanningData.valid
-                    ? 'rgba(76, 175, 80, 0.2)'
-                    : 'rgba(244, 67, 54, 0.2)',
-                  borderColor: scanningData.valid ? '#4CAF50' : '#F44336',
-                },
-              ]}
-            >
-              <Text
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={[styles.statusText, { color: scanningData.valid ? '#4CAF50' : '#F44336' }]}
-              >
-                {scanningData.valid ? 'Документ валиден' : 'Документ невалиден'}
-              </Text>
-            </View>
-
-            {scanningData.expiresSoon && (
-              <View style={styles.warningBadge}>
-                <Text style={styles.warningText}>⚠️ Истекает скоро</Text>
+                <Text style={styles.fieldText}>
+                  <Text style={styles.fieldLabel}>Истекает: </Text>
+                  {formatDate(scanningData.expirationDate)}
+                </Text>
               </View>
-            )}
-          </>
-        ) : (
-          <Text style={styles.noDataText}>
-            Данные документа не загружены или QR-код не распознан
-          </Text>
-        )}
-      </View>
+            </>
+          ) : (
+            <Text style={styles.noDataText}>
+              Данные документа не загружены или QR-код не распознан
+            </Text>
+          )}
+        </View>
+
+        <View style={styles.markContainer}>
+          {scanningData && (
+            <>
+              {scanningData.valid && !scanningData.expiresSoon && (
+                <>
+                  <View style={[styles.markView, { backgroundColor: 'rgba(22, 255, 35, 0.3)' }]}>
+                    <Text style={[styles.markText, { color: '#72FF7C' }]}>Документ актуален!</Text>
+                  </View>
+                  <GoodBanner />
+                </>
+              )}
+              {scanningData.valid && scanningData.expiresSoon && (
+                <>
+                  <View style={[styles.markView, { backgroundColor: 'rgba(255, 255, 0, 0.3)' }]}>
+                    <Text style={[styles.markText, { color: '#FFFFA3' }]}>
+                      Срок действия документа скоро истечет!
+                    </Text>
+                  </View>
+                  <WarningBanner />
+                </>
+              )}
+              {!scanningData.valid && (
+                <>
+                  <View style={[styles.markView, { backgroundColor: 'rgba(255, 0, 0, 0.3)' }]}>
+                    <Text style={[styles.markText, { color: '#FF9E9E' }]}>
+                      Срок действия документа истек!
+                    </Text>
+                  </View>
+                  <ExpirationBanner />
+                </>
+              )}
+            </>
+          )}
+        </View>
+
+        {/* Добавим пустое пространство внизу для лучшего скролла */}
+        <View style={styles.bottomSpacing} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -105,8 +127,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 15,
+    paddingBottom: 40, // Отступ снизу для скролла
   },
   appTitle: {
     fontSize: 32,
@@ -135,6 +163,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
+    paddingTop: 15,
+    backgroundColor: '#121212', // Чтобы не было прозрачности при скролле
+    zIndex: 10, // Чтобы оставалось поверх контента
   },
   content: {
     backgroundColor: '#1E1E1E',
@@ -143,6 +174,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     borderWidth: 1,
     borderColor: '#333333',
+    marginBottom: 30,
   },
   fieldText: {
     fontSize: 16,
@@ -155,38 +187,27 @@ const styles = StyleSheet.create({
     fontFamily: 'VelaSans',
     color: '#B0B0B0',
   },
-  statusBadge: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    alignSelf: 'flex-start',
-    marginTop: 16,
-  },
-  statusText: {
-    fontFamily: 'VelaSansBold',
-    fontSize: 14,
-  },
-  warningBadge: {
-    backgroundColor: 'rgba(255, 152, 0, 0.2)',
-    borderWidth: 1,
-    borderColor: '#FF9800',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-    marginTop: 8,
-  },
-  warningText: {
-    color: '#FF9800',
-    fontFamily: 'VelaSansBold',
-    fontSize: 14,
-  },
   noDataText: {
     color: '#888888',
     fontFamily: 'VelaSansRegular',
     fontSize: 16,
     textAlign: 'center',
     paddingVertical: 20,
+  },
+  markContainer: {
+    paddingHorizontal: 8,
+  },
+  markView: {
+    paddingVertical: 14,
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  markText: {
+    fontSize: 14,
+    fontFamily: 'VelaSansRegular',
+    textAlign: 'center',
+  },
+  bottomSpacing: {
+    height: 50,
   },
 });
