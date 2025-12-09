@@ -1,14 +1,22 @@
+import { useAuth } from '@/features/auth';
 import { ScanningButton, UploadFromGalleryButton } from '@/features/scanning';
 import { AppLogo } from '@/features/shared';
-import { StyleSheet, Text, View } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 const HomeScreen = () => {
+  const { handleLogoutPress } = useAuth();
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoView}>
-        <AppLogo />
-        <Text style={styles.appTitle}>VerifyIt</Text>
+      <View style={styles.appBar}>
+        <View></View>
+        <View style={styles.logoView}>
+          <AppLogo />
+          <Text style={styles.appTitle}>VerifyIt</Text>
+        </View>
+        <TouchableOpacity style={styles.logout} onPress={handleLogoutPress}>
+          <MaterialIcons name="logout" size={32} color="#FF3737" />
+        </TouchableOpacity>
       </View>
       <View style={styles.buttonsContainer}>
         <ScanningButton />
@@ -41,6 +49,15 @@ const styles = StyleSheet.create({
     gap: 40,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  appBar: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+  },
+  logout: {
+    justifyContent: 'flex-end',
   },
 });
 export default HomeScreen;
