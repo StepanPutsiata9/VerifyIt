@@ -34,7 +34,7 @@ export function MyTabBar({ state, descriptors, navigation }: BottomTabBarProps) 
         ]}
       >
         <LinearGradient
-          colors={['#FF3737', '#FF3737']}
+          colors={['#FF3737', '#FF1F1F']}
           style={styles.gradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
