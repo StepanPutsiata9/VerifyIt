@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   greetingText: {
-    color: '#FF2424',
+    color: '#ffffff',
     fontSize: 24,
     fontFamily: 'VelaSansRegular',
     textAlign: 'center',

@@ -9,6 +9,7 @@ export default function HistoryTab() {
         <AppLogo />
         <Text style={styles.appTitle}>VerifyIt</Text>
       </View>
+      <Text style={styles.title}>Журнал верификаций</Text>
     </SafeAreaView>
   );
 }
@@ -24,11 +25,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   appTitle: {
     fontSize: 32,
     color: '#FF3737',
     fontFamily: 'VelaSansBold',
+  },
+  title: {
+    fontFamily: 'VelaSansBold',
+    fontSize: 22,
+    textAlign: 'center',
+    color: 'white',
   },
 });

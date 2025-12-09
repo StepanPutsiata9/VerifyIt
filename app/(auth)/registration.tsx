@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   greetText: {
-    color: '#FF2424',
+    color: '#ffffff',
     fontSize: 24,
     fontFamily: 'VelaSansBold',
     textAlign: 'center',
