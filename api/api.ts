@@ -2,7 +2,7 @@ import { clearTokens, getTokens, storeTokens } from '@/features/auth/storage';
 import axios from 'axios';
 
 export const api = axios.create({
-  baseURL: 'https://backend.onrender.com/',
+  baseURL: 'https://verifyit-backend-frhc.onrender.com/',
 });
 
 let onLogoutCallback: (() => void) | null = null;
@@ -35,9 +35,12 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && tokens?.refreshToken && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axios.post('https://backend.onrender.com/auth/refresh', {
-          refreshToken: tokens.refreshToken,
-        });
+        const response = await axios.post(
+          'https://verifyit-backend-frhc.onrender.com/auth/refresh',
+          {
+            refreshToken: tokens.refreshToken,
+          }
+        );
         const { accessToken, refreshToken } = response.data;
         await storeTokens({ accessToken, refreshToken });
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;

@@ -9,11 +9,7 @@ import { useEffect } from 'react';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Provider } from 'react-redux';
 function AppNavigationStack() {
-  const {
-    // user,
-    isLoading,
-    loadApp,
-  } = useAuth();
+  const { user, isLoading, loadApp } = useAuth();
   useEffect(() => {
     loadApp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -29,10 +25,10 @@ function AppNavigationStack() {
           animation: 'fade',
         }}
       >
-        <Stack.Protected guard={!!true}>
+        <Stack.Protected guard={!!user}>
           <Stack.Screen name="(root)" />
         </Stack.Protected>
-        <Stack.Protected guard={!true}>
+        <Stack.Protected guard={!user}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
       </Stack>
