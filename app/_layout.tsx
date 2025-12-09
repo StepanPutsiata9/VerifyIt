@@ -29,10 +29,10 @@ function AppNavigationStack() {
           animation: 'fade',
         }}
       >
-        <Stack.Protected guard={!!false}>
+        <Stack.Protected guard={!!true}>
           <Stack.Screen name="(root)" />
         </Stack.Protected>
-        <Stack.Protected guard={!false}>
+        <Stack.Protected guard={!true}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
       </Stack>

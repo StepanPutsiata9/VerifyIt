@@ -8,7 +8,8 @@ export default function MainLayout() {
         animation: 'fade',
       }}
     >
-      <Stack.Screen name="index" />
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="answer" />
     </Stack>
   );
 }

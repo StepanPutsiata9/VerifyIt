@@ -1,17 +1,17 @@
 import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const HomeScreen = () => {
+export default function SettingsTab() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Home Screen</Text>
+      <Text>qwqwq</Text>
     </SafeAreaView>
   );
-};
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
+    paddingHorizontal: 16,
   },
 });
-export default HomeScreen;
