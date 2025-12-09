@@ -1,9 +1,12 @@
+import { useAppSelector } from '@/store/hooks';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 
 export const useScan = () => {
   const router = useRouter();
-
+  const { scanningLoading, scanningData, scanningError } = useAppSelector(
+    (state) => state.scanning
+  );
   const [isProcessing, setIsProcessing] = useState(false);
   const [cameraVisible, setCameraVisible] = useState(false);
   const hasNavigatedRef = useRef(false);
@@ -42,5 +45,8 @@ export const useScan = () => {
     cameraVisible: cameraVisible,
     isProcessing: isProcessing,
     setCameraVisible: setCameraVisible,
+    scanningLoading: scanningLoading,
+    scanningData: scanningData,
+    scanningError: scanningError,
   };
 };

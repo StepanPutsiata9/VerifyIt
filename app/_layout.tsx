@@ -1,4 +1,5 @@
 import { useAuth } from '@/features/auth';
+import { useScan } from '@/features/scanning';
 import { LoadingModal } from '@/features/shared';
 import { store } from '@/store';
 import { useFonts } from 'expo-font';
@@ -10,6 +11,7 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { Provider } from 'react-redux';
 function AppNavigationStack() {
   const { user, isLoading, loadApp } = useAuth();
+  const { scanningLoading } = useScan();
   useEffect(() => {
     loadApp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -18,7 +20,7 @@ function AppNavigationStack() {
   return (
     <>
       <StatusBar style="light" />
-      <LoadingModal visible={isLoading} />
+      <LoadingModal visible={isLoading || scanningLoading} />
       <Stack
         screenOptions={{
           headerShown: false,

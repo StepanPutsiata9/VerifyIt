@@ -103,9 +103,7 @@ export const useAuth = () => {
           onPress: async () => {
             try {
               await handleLogout();
-              console.log('logout');
               router.replace('/(auth)/login');
-              console.log('logout 2');
             } catch (error) {
               console.error('Logout error:', error);
             }
