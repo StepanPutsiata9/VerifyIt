@@ -1,35 +1,51 @@
 import { AntDesign } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useState } from 'react';
+import { CameraView as ExpoCameraView } from 'expo-camera';
+import React, { useEffect } from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCameraScan } from '../hooks';
 
-interface CameraProps {
+interface CameraViewProps {
   visible: boolean;
   onClose: () => void;
   onQRCodeScanned?: (data: string) => void;
+  scanFrameColor?: string;
+  instructionText?: string;
+  showCloseButton?: boolean;
 }
 
-export const Camera: React.FC<CameraProps> = ({ visible, onClose, onQRCodeScanned }) => {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [scanned, setScanned] = useState(false);
+export const Camera: React.FC<CameraViewProps> = ({
+  visible,
+  onClose,
+  onQRCodeScanned,
+  scanFrameColor = '#FF3737',
+  instructionText = 'Наведите камеру на QR-код',
+  showCloseButton = true,
+}) => {
+  const {
+    permission,
+    scanned,
+    isLoading,
+    requestPermission,
+    handleBarCodeScanned: handleScan,
+    resetScan,
+  } = useCameraScan();
 
-  useEffect(() => {
-    if (visible) {
-      requestPermission();
-      setScanned(false);
-    }
-  }, [visible]);
-
-  const handleBarCodeScanned = ({ type, data }: { type: string; data: string }) => {
-    if (!scanned && onQRCodeScanned) {
-      setScanned(true);
-      console.log(`QR-код типа ${type} отсканирован: ${data}`);
+  const handleBarCodeScanned = React.useCallback(
+    ({ type, data }: { type: string; data: string }) => {
+      handleScan(data, type);
 
       if (onQRCodeScanned) {
         onQRCodeScanned(data);
       }
+    },
+    [handleScan, onQRCodeScanned]
+  );
+
+  useEffect(() => {
+    if (visible) {
+      resetScan();
     }
-  };
+  }, [visible, resetScan]);
 
   if (!permission) {
     return null;
@@ -37,61 +53,76 @@ export const Camera: React.FC<CameraProps> = ({ visible, onClose, onQRCodeScanne
 
   if (!permission.granted) {
     return (
-      <Modal visible={visible} animationType="fade" statusBarTranslucent={true}>
-        <View style={styles.permissionContainer}>
-          <Text style={styles.permissionText}>Для сканирования QR-кодов нужен доступ к камере</Text>
-          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-            <Text style={styles.permissionButtonText}>Разрешить доступ</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.closePermissionButton} onPress={onClose}>
-            <Text style={styles.closePermissionButtonText}>Закрыть</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+      <PermissionScreen
+        visible={visible}
+        onRequestPermission={requestPermission}
+        onClose={onClose}
+      />
     );
   }
 
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      statusBarTranslucent={true}
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} animationType="fade" statusBarTranslucent onRequestClose={onClose}>
       <View style={styles.container}>
-        <CameraView
+        <ExpoCameraView
           style={StyleSheet.absoluteFillObject}
           zoom={0}
           autofocus="on"
-          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          onBarcodeScanned={scanned || isLoading ? undefined : handleBarCodeScanned}
           barcodeScannerSettings={{
             barcodeTypes: ['qr', 'pdf417'],
           }}
         />
 
         <View style={styles.overlay}>
-          <View style={styles.scanFrame}>
-            <View style={[styles.corner, styles.topLeft]} />
-            <View style={[styles.corner, styles.topRight]} />
-            <View style={[styles.corner, styles.bottomLeft]} />
-            <View style={[styles.corner, styles.bottomRight]} />
-          </View>
+          <ScanFrame color={scanFrameColor} />
+          <Text style={styles.instructionText}>{instructionText}</Text>
 
-          <Text style={styles.instructionText}>Наведите камеру на QR-код</Text>
-
-          {scanned && (
+          {(scanned || isLoading) && (
             <View style={styles.scannedIndicator}>
-              <Text style={styles.scannedText}>QR-код распознан! Переходим...</Text>
+              <Text style={styles.scannedText}>
+                {isLoading ? 'Обработка...' : 'QR-код распознан!'}
+              </Text>
             </View>
           )}
         </View>
-        <TouchableOpacity style={styles.closeBtn} onPress={onClose} activeOpacity={0.7}>
-          <AntDesign name="close" size={30} color="white" />
-        </TouchableOpacity>
+
+        {showCloseButton && (
+          <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
+            <AntDesign name="close" size={30} color="white" />
+          </TouchableOpacity>
+        )}
       </View>
     </Modal>
   );
 };
+
+const ScanFrame: React.FC<{ color: string }> = ({ color }) => (
+  <View style={styles.scanFrame}>
+    <View style={[styles.corner, styles.topLeft, { borderColor: color }]} />
+    <View style={[styles.corner, styles.topRight, { borderColor: color }]} />
+    <View style={[styles.corner, styles.bottomLeft, { borderColor: color }]} />
+    <View style={[styles.corner, styles.bottomRight, { borderColor: color }]} />
+  </View>
+);
+
+const PermissionScreen: React.FC<{
+  visible: boolean;
+  onRequestPermission: () => void;
+  onClose: () => void;
+}> = ({ visible, onRequestPermission, onClose }) => (
+  <Modal visible={visible} animationType="fade">
+    <View style={styles.permissionContainer}>
+      <Text style={styles.permissionText}>Для сканирования QR-кодов нужен доступ к камере</Text>
+      <TouchableOpacity style={styles.permissionButton} onPress={onRequestPermission}>
+        <Text style={styles.permissionButtonText}>Разрешить доступ</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.closePermissionButton} onPress={onClose}>
+        <Text style={styles.closePermissionButtonText}>Закрыть</Text>
+      </TouchableOpacity>
+    </View>
+  </Modal>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -115,7 +146,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 30,
     height: 30,
-    borderColor: '#FF3737',
   },
   topLeft: {
     top: 0,
