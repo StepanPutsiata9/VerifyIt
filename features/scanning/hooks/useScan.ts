@@ -1,35 +1,54 @@
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-
+import { clearScanningData, getQrInfo } from '../store/scanning.slice';
+import { DocumentType } from '../types/';
 export const useScan = () => {
   const router = useRouter();
   const { scanningLoading, scanningData, scanningError } = useAppSelector(
     (state) => state.scanning
   );
+  const dispatch = useAppDispatch();
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [cameraVisible, setCameraVisible] = useState(false);
   const hasNavigatedRef = useRef(false);
   const scannedDataRef = useRef<string | null>(null);
-  const handleQRCodeScanned = (data: string) => {
+
+  const handleQRCodeScanned = async (data: string) => {
     if (isProcessing || hasNavigatedRef.current) {
       return;
     }
 
-    console.log('QR-код отсканирован:', data);
     setIsProcessing(true);
     scannedDataRef.current = data;
     hasNavigatedRef.current = true;
 
-    setCameraVisible(false);
-    setTimeout(() => {
-      router.push({
-        pathname: '/(root)/answer',
-        params: { qrData: data },
-      });
-    }, 200);
-  };
+    try {
+      await dispatch(getQrInfo(data));
 
+      setCameraVisible(false);
+      setTimeout(() => {
+        router.push('/(root)/answer');
+      }, 200);
+    } catch (error) {
+      console.error('Ошибка при получении данных:', error);
+
+      setCameraVisible(false);
+
+      setTimeout(() => {
+        router.push({
+          pathname: '/(root)/answer',
+          params: {
+            qrData: data,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          },
+        });
+      }, 200);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
   const handleClose = () => {
     if (hasNavigatedRef.current) {
       return;
@@ -39,6 +58,40 @@ export const useScan = () => {
       router.back();
     }, 200);
   };
+
+  const clearAllData = () => {
+    dispatch(clearScanningData());
+  };
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'Не указано';
+    const dateObj = date instanceof Date ? date : new Date(date);
+
+    return dateObj.toLocaleDateString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
+  const typeMap: Record<DocumentType, string> = {
+    CONTRACT: 'Договор',
+    INNOVICE: 'Счёт-фактура',
+    ACT: 'Акт',
+    WAYBILL: 'Товарная накладная',
+    STATEMENT: 'Выписка',
+    ORDER: 'Заказ',
+    PROTOCOL: 'Протокол',
+    CHARTER: 'Устав',
+    LETTER: 'Письмо',
+    CV: 'Резюме (CV)',
+    REPORT: 'Отчёт',
+    REFERENCE: 'Справка',
+  };
+
+  const getDocumentTypeName = (type: DocumentType): string => {
+    return typeMap[type];
+  };
+
   return {
     handleClose: handleClose,
     handleQRCodeScanned: handleQRCodeScanned,
@@ -48,5 +101,8 @@ export const useScan = () => {
     scanningLoading: scanningLoading,
     scanningData: scanningData,
     scanningError: scanningError,
+    clearAllData: clearAllData,
+    formatDate: formatDate,
+    getDocumentTypeName: getDocumentTypeName,
   };
 };

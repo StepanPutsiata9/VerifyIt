@@ -30,6 +30,7 @@ export interface IDocumentInfo {
   type: DocumentType;
   author: string;
   expirationDate: Date;
+  createdAt: Date;
 }
 
 export interface ScanState {

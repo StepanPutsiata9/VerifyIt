@@ -28,6 +28,9 @@ const scanningSlice = createSlice({
     setScanningError(state, action) {
       state.scanningError = action.payload;
     },
+    clearScanningData(state) {
+      state.scanningData = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,5 +48,5 @@ const scanningSlice = createSlice({
   },
 });
 
-export const { setScanningLoading, setScanningError } = scanningSlice.actions;
+export const { setScanningLoading, setScanningError, clearScanningData } = scanningSlice.actions;
 export default scanningSlice.reducer;

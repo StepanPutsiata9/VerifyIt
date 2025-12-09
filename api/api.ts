@@ -55,10 +55,7 @@ api.interceptors.response.use(
     }
 
     if (error.response?.status === 404) {
-      console.log('404');
       if (onLogoutCallback) {
-        console.log('logout callback');
-
         onLogoutCallback();
       }
       return { data: null };

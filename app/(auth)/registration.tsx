@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#242424',
     fontFamily: 'VelaSans',
-    color: '#6B6B6B',
+    color: '#fff',
     borderWidth: 1,
     borderColor: 'transparent',
   },

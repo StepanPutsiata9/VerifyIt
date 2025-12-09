@@ -2,6 +2,7 @@ export { Header, LoadingModal, MyTabBar, PrimaryButton, SecondaryButton } from '
 export {
   AppLogo,
   AuthBanner,
+  Cross,
   GalleryLogo,
   GreetingBanner,
   RegistrationBanner,

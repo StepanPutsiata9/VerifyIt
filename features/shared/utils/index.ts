@@ -4,6 +4,7 @@ export { GreetingBanner } from './GreetingBanner';
 export {
   ActiveHistory,
   ActiveHome,
+  Cross,
   GalleryLogo,
   InActiveHistory,
   InActiveHome,
