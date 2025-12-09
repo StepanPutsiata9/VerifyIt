@@ -1,1 +1,1 @@
-export { ScanningButton, UploadFromGalleryButton } from './components';
+export { Camera, ScanningButton, UploadFromGalleryButton } from './components';

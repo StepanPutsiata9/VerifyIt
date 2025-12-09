@@ -10,6 +10,15 @@ export default function MainLayout() {
     >
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="answer" />
+      <Stack.Screen
+        name="scan"
+        options={{
+          headerShown: false,
+          presentation: 'modal', // Важно!
+          contentStyle: { backgroundColor: '#121212' },
+          animation: 'fade',
+        }}
+      />
     </Stack>
   );
 }
