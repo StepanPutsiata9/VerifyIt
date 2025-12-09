@@ -18,8 +18,6 @@ export default function Answer() {
     }, [clearAllData])
   );
 
-  console.log('scanData', scanningData);
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -36,6 +34,7 @@ export default function Answer() {
 
           <TouchableOpacity
             style={styles.backBtn}
+            hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
             onPress={() => router.navigate('/(root)/(tabs)/home')}
           >
             <Cross />
@@ -85,38 +84,42 @@ export default function Answer() {
           {scanningData && (
             <>
               {scanningData.valid && !scanningData.expiresSoon && (
-                <>
+                <View style={styles.bannerWrapper}>
                   <View style={[styles.markView, { backgroundColor: 'rgba(22, 255, 35, 0.3)' }]}>
                     <Text style={[styles.markText, { color: '#72FF7C' }]}>Документ актуален!</Text>
                   </View>
-                  <GoodBanner />
-                </>
+                  <View style={styles.bannerContainer}>
+                    <GoodBanner />
+                  </View>
+                </View>
               )}
               {scanningData.valid && scanningData.expiresSoon && (
-                <>
+                <View style={styles.bannerWrapper}>
                   <View style={[styles.markView, { backgroundColor: 'rgba(255, 255, 0, 0.3)' }]}>
                     <Text style={[styles.markText, { color: '#FFFFA3' }]}>
                       Срок действия документа скоро истечет!
                     </Text>
                   </View>
-                  <WarningBanner />
-                </>
+                  <View style={styles.bannerContainer}>
+                    <WarningBanner />
+                  </View>
+                </View>
               )}
               {!scanningData.valid && (
-                <>
+                <View style={styles.bannerWrapper}>
                   <View style={[styles.markView, { backgroundColor: 'rgba(255, 0, 0, 0.3)' }]}>
                     <Text style={[styles.markText, { color: '#FF9E9E' }]}>
                       Срок действия документа истек!
                     </Text>
                   </View>
-                  <ExpirationBanner />
-                </>
+                  <View style={styles.bannerContainer}>
+                    <ExpirationBanner />
+                  </View>
+                </View>
               )}
             </>
           )}
         </View>
-
-        {/* Добавим пустое пространство внизу для лучшего скролла */}
         <View style={styles.bottomSpacing} />
       </ScrollView>
     </SafeAreaView>
@@ -134,7 +137,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 15,
-    paddingBottom: 40, // Отступ снизу для скролла
+    paddingBottom: 40,
   },
   appTitle: {
     fontSize: 32,
@@ -164,8 +167,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: 15,
-    backgroundColor: '#121212', // Чтобы не было прозрачности при скролле
-    zIndex: 10, // Чтобы оставалось поверх контента
+    backgroundColor: '#121212',
+    zIndex: 10,
   },
   content: {
     backgroundColor: '#1E1E1E',
@@ -196,16 +199,27 @@ const styles = StyleSheet.create({
   },
   markContainer: {
     paddingHorizontal: 8,
+    alignItems: 'center',
+  },
+  bannerWrapper: {
+    width: '100%',
+    alignItems: 'center',
   },
   markView: {
     paddingVertical: 14,
     borderRadius: 15,
     marginBottom: 20,
+    width: '100%',
   },
   markText: {
     fontSize: 14,
     fontFamily: 'VelaSansRegular',
     textAlign: 'center',
+  },
+  bannerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
   },
   bottomSpacing: {
     height: 50,

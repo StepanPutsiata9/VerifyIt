@@ -9,7 +9,12 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIViewControllerBasedStatusBarAppearance": true,
+        "NSCameraUsageDescription": "Приложению требуется доступ к камере для сканирования QR-кодов",
+        "NSFaceIDUsageDescription": "Allow hackaton_Itech_2025 to use Face ID for secure authentication."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +24,12 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.USE_BIOMETRIC"
+      ],
+      "package": "com.sstepanpvich546.hackaton_Itech_2025"
     },
     "web": {
       "output": "static",
@@ -42,11 +52,22 @@
       "expo-secure-store",
       "expo-font",
       "expo-web-browser",
-      "expo-barcode-scanner"
+      "expo-barcode-scanner",
+    [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Войдите с помощью Face ID для доступа к защищенному журналу верификаций"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
     }
   }
 }

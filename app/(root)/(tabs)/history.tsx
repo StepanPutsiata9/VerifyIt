@@ -1,23 +1,39 @@
+import { BiometricGuard, useHistory } from '@/features/biometrics/';
 import { AppLogo } from '@/features/shared';
+import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HistoryTab() {
+const ProtectedContent = () => {
+  const { loadHistory } = useHistory();
+  useEffect(() => {
+    loadHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.logoView}>
         <AppLogo />
         <Text style={styles.appTitle}>VerifyIt</Text>
       </View>
+
       <Text style={styles.title}>Журнал верификаций</Text>
     </SafeAreaView>
   );
+};
+
+export default function HistoryTab() {
+  return (
+    <BiometricGuard>
+      <ProtectedContent />
+    </BiometricGuard>
+  );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-    paddingHorizontal: 16,
     paddingTop: 15,
   },
   logoView: {
@@ -25,7 +41,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 10,
+    marginBottom: 24,
   },
   appTitle: {
     fontSize: 32,
@@ -37,5 +53,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: 'center',
     color: 'white',
+    marginBottom: 8,
   },
 });
