@@ -1,9 +1,16 @@
 import { ScannerLogo } from '@/features/shared';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export const ScanningButton = () => {
+  const router = useRouter();
+
+  const handlePress = () => {
+    router.push('/(root)/scan');
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={() => {}}>
+    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.8}>
       <View style={styles.content}>
         <ScannerLogo />
         <Text style={styles.title}>Сканер</Text>
@@ -22,6 +29,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF3737',
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   content: {
     flexDirection: 'column',
