@@ -12,12 +12,12 @@ export default function MainLayout() {
       <Stack.Screen name="answer" />
       <Stack.Screen
         name="scan"
-        options={{
-          headerShown: false,
-          presentation: 'modal', // Важно!
-          contentStyle: { backgroundColor: '#121212' },
-          animation: 'fade',
-        }}
+        // options={{
+        //   headerShown: false,
+        //   presentation: 'modal',
+        //   contentStyle: { backgroundColor: '#121212' },
+        //   animation: 'fade',
+        // }}
       />
     </Stack>
   );

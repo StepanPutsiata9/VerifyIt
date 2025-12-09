@@ -59,7 +59,6 @@ export const Camera: React.FC<CameraProps> = ({ visible, onClose, onQRCodeScanne
       onRequestClose={onClose}
     >
       <View style={styles.container}>
-        {/* Камера */}
         <CameraView
           style={StyleSheet.absoluteFillObject}
           zoom={0}
@@ -86,8 +85,6 @@ export const Camera: React.FC<CameraProps> = ({ visible, onClose, onQRCodeScanne
             </View>
           )}
         </View>
-
-        {/* Кнопка закрытия */}
         <TouchableOpacity style={styles.closeBtn} onPress={onClose} activeOpacity={0.7}>
           <AntDesign name="close" size={30} color="white" />
         </TouchableOpacity>

@@ -16,7 +16,7 @@ import { useRegistrationValidation } from './useRegistrationValidation';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();
-  const { user, isLoading, isFirstLaunch: firstLaunch } = useAppSelector(state => state.auth);
+  const { user, isLoading, isFirstLaunch: firstLaunch } = useAppSelector((state) => state.auth);
   const { validateInputs: validateRegisterInputs } = useRegistrationValidation();
   const { validateInputs: validateAuthInputs } = useAuthValidation();
   const router = useRouter();
@@ -103,7 +103,9 @@ export const useAuth = () => {
           onPress: async () => {
             try {
               await handleLogout();
+              console.log('logout');
               router.replace('/(auth)/login');
+              console.log('logout 2');
             } catch (error) {
               console.error('Logout error:', error);
             }

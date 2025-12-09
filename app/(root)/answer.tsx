@@ -6,13 +6,14 @@ export default function AnswerScreen() {
   const params = useLocalSearchParams();
   const qrData = (params.qrData as string) || 'Данные не получены';
 
-  console.log('AnswerScreen: получены данные:', qrData);
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Результат сканирования</Text>
       <Text style={styles.data}>{qrData}</Text>
-      <TouchableOpacity style={styles.button} onPress={() => router.back()}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.navigate('/(root)/(tabs)/home')}
+      >
         <Text style={styles.buttonText}>Назад</Text>
       </TouchableOpacity>
     </View>
