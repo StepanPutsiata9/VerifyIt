@@ -13,56 +13,48 @@ const BiometricGuard: React.FC<BiometricGuardProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [authError, setAuthError] = useState<string | null>(null);
 
-  // Проверяем поддержку и наличие биометрии
-  useEffect(() => {
-    const authenticate = async () => {
-      try {
-        const compatible = await LocalAuthentication.hasHardwareAsync();
-        if (!compatible) {
-          setAuthError('Устройство не поддерживает биометрическую аутентификацию.');
-          setIsLoading(false);
-          return;
-        }
-
-        const enrolled = await LocalAuthentication.isEnrolledAsync();
-        if (!enrolled) {
-          setAuthError('Не настроены биометрические данные (отпечаток/лицо).');
-          setIsLoading(false);
-          return;
-        }
-
-        const authResult = await LocalAuthentication.authenticateAsync({
-          promptMessage: 'Подтвердите свою личность',
-          fallbackLabel: 'Использовать PIN/пароль',
-          disableDeviceFallback: false,
-        });
-
-        if (authResult.success) {
-          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          setIsAuthenticated(true);
-        } else {
-          await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-          setAuthError(authResult.error ?? 'Неизвестная ошибка аутентификации');
-        }
-      } catch (err: any) {
-        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-        setAuthError(err.message || 'Ошибка при аутентификации');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    authenticate();
-  }, []);
-
-  const retryAuthentication = () => {
+  const authenticate = async () => {
     setIsLoading(true);
     setAuthError(null);
-    setTimeout(() => {
+    try {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      if (!compatible) {
+        setAuthError('Устройство не поддерживает биометрическую аутентификацию.');
+        setIsLoading(false);
+        return;
+      }
+
+      const enrolled = await LocalAuthentication.isEnrolledAsync();
+      if (!enrolled) {
+        setAuthError('Не настроены биометрические данные (отпечаток/лицо).');
+        setIsLoading(false);
+        return;
+      }
+
+      const authResult = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Подтвердите свою личность',
+        fallbackLabel: 'Использовать PIN/пароль',
+        disableDeviceFallback: false,
+      });
+
+      if (authResult.success) {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        setIsAuthenticated(true);
+      } else {
+        await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        setAuthError(authResult.error ?? 'Неизвестная ошибка аутентификации');
+      }
+    } catch (err: any) {
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      setAuthError(err.message || 'Ошибка при аутентификации');
+    } finally {
       setIsLoading(false);
-      setAuthError('Повторная попытка недоступна в текущей реализации. Перезагрузите экран.');
-    }, 100);
+    }
   };
+
+  useEffect(() => {
+    authenticate();
+  }, []);
 
   if (isLoading) {
     return (
@@ -79,9 +71,8 @@ const BiometricGuard: React.FC<BiometricGuardProps> = ({ children }) => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.centered}>
-          <Text style={styles.errorTitle}>🔒 Доступ ограничен</Text>
-          <Text style={styles.errorMessage}>{authError}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={retryAuthentication}>
+          <Text style={styles.errorTitle}>Доступ ограничен</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={authenticate}>
             <Text style={styles.retryButtonText}>Повторить</Text>
           </TouchableOpacity>
         </View>
@@ -119,12 +110,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 12,
     textAlign: 'center',
-  },
-  errorMessage: {
-    fontSize: 16,
-    color: '#FF6B6B',
-    textAlign: 'center',
-    marginBottom: 24,
   },
   retryButton: {
     backgroundColor: '#FF3737',

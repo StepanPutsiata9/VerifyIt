@@ -1,2 +1,2 @@
-export { BiometricGuard } from './components';
+export { BiometricGuard, DocumentCard } from './components';
 export { useHistory } from './hooks';

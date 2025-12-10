@@ -8,6 +8,20 @@ export interface IDocumentInfo {
   expirationDate: Date;
   createdAt: Date;
 }
+
+export type DocumentType =
+  | 'CONTRACT'
+  | 'INNOVICE'
+  | 'ACT'
+  | 'WAYBILL'
+  | 'STATEMENT'
+  | 'ORDER'
+  | 'PROTOCOL'
+  | 'CHARTER'
+  | 'LETTER'
+  | 'CV'
+  | 'REPORT'
+  | 'REFERENCE';
 export interface HistoryState {
   historyData: IDocumentInfo[] | null;
   historyLoading: boolean;
