@@ -37,7 +37,7 @@ const NotificationsScreen = () => {
 
       <FlatList
         data={notifications}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id || `notification-${index}`}
         renderItem={renderNotification}
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={styles.separator} />}

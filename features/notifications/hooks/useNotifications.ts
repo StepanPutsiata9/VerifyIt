@@ -14,21 +14,19 @@ export const useNotifications = () => {
     const tokens = await getTokens();
     return tokens?.accessToken;
   };
-  const token = getAccessToken();
-  const connectSSE = useCallback(() => {
+
+  const connectSSE = useCallback(async () => {
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
     }
+
+    const token = await getAccessToken();
     console.log('====================================');
     console.log(token);
     console.log('====================================');
+
     const eventSource = new EventSource(
-      'https://verifyit-backend-frhc.onrender.com/notifications/stream',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `https://verifyit-backend-frhc.onrender.com/notifications/stream?token=${token}`
     );
     eventSourceRef.current = eventSource;
 
@@ -41,13 +39,20 @@ export const useNotifications = () => {
 
     eventSource.addEventListener('message', (event) => {
       try {
-        const notification: INotification = JSON.parse(event.data || '');
-        dispatch(
-          addNotification({
-            ...notification,
-            createdAt: new Date(notification.createdAt),
-          })
-        );
+        const rawData = JSON.parse(event.data || '');
+        
+        // Игнорируем KEEP_ALIVE сообщения
+        if (rawData.type === 'KEEP_ALIVE') return;
+        
+        const notification: INotification = {
+          id: rawData.id || `${Date.now()}-${Math.random()}`,
+          title: rawData.type === 'EXPIRED' ? 'Документ истек' : rawData.type,
+          message: rawData.message || '',
+          createdAt: rawData.timestamp,
+          isRead: false,
+        };
+        
+        dispatch(addNotification(notification));
       } catch (error) {
         console.error('Error parsing notification:', error);
       }
@@ -67,7 +72,10 @@ export const useNotifications = () => {
     }
   }, [dispatch]);
 
-  const formatTime = (date: Date) => {
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'неизвестно';
+
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);
