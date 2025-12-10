@@ -23,12 +23,7 @@ export const useNotifications = () => {
     console.log(token);
     console.log('====================================');
     const eventSource = new EventSource(
-      'https://verifyit-backend-frhc.onrender.com/notifications/stream',
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      `https://verifyit-backend-frhc.onrender.com/notifications/stream/?token=${token}`
     );
     eventSourceRef.current = eventSource;
 
