@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { getHistory } from '../services';
+import { deleteDocument, getHistory } from '../services';
 import { HistoryState } from '../types';
 
 const initialState: HistoryState = {
@@ -18,6 +18,24 @@ export const getHistoryArray = createAsyncThunk(
     }
   }
 );
+
+export const deleteDocumentItem = createAsyncThunk(
+  'history/deleteDocumentItem',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const isDelete = await deleteDocument(id);
+      if (isDelete) {
+        return id;
+      }
+      if (!isDelete) {
+        throw new Error('Failed to delete ticket');
+      }
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Unknown error');
+    }
+  }
+);
+
 const historySlice = createSlice({
   name: 'history',
   initialState,
@@ -27,6 +45,11 @@ const historySlice = createSlice({
     },
     clearHistoryData(state) {
       state.historyData = null;
+    },
+    removeDocLocally: (state, action) => {
+      if (state.historyData) {
+        state.historyData = state.historyData.filter((doc) => doc.id !== action.payload);
+      }
     },
   },
   extraReducers: (builder) => {
@@ -41,9 +64,21 @@ const historySlice = createSlice({
       .addCase(getHistoryArray.rejected, (state) => {
         state.historyData = null;
         state.historyLoading = false;
+      })
+
+      .addCase(deleteDocumentItem.pending, (state) => {
+        state.historyError = null;
+      })
+      .addCase(deleteDocumentItem.fulfilled, (state, action) => {
+        if (state.historyData) {
+          state.historyData = state.historyData.filter((doc) => doc.id !== action.payload);
+        }
+      })
+      .addCase(deleteDocumentItem.rejected, (state, action) => {
+        state.historyError = action.payload as string;
       });
   },
 });
 
-export const { setHistoryLoading, clearHistoryData } = historySlice.actions;
+export const { setHistoryLoading, clearHistoryData, removeDocLocally } = historySlice.actions;
 export default historySlice.reducer;

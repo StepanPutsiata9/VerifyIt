@@ -7,6 +7,7 @@ export interface IDocumentInfo {
   author: string;
   expirationDate: Date;
   createdAt: Date;
+  historyId: string;
 }
 
 export type DocumentType =

@@ -2,8 +2,8 @@ import { BiometricGuard, DocumentCard, useHistory } from '@/features/biometrics/
 import { AppLogo } from '@/features/shared';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 const ProtectedContent = () => {
   const { loadHistory, forceRefresh, historyData, historyLoading } = useHistory();
   useEffect(() => {
@@ -20,25 +20,27 @@ const ProtectedContent = () => {
       {historyLoading ? (
         <ActivityIndicator size="large" color="#FF3737" style={styles.loader} />
       ) : (
-        <View>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<Text style={styles.title}>Журнал верификаций</Text>}
-            data={historyData}
-            keyExtractor={(item) => item.id + Math.random()}
-            renderItem={({ item }) => <DocumentCard document={item} />}
-            contentContainerStyle={styles.listContent}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-            refreshControl={
-              <RefreshControl
-                refreshing={historyLoading}
-                onRefresh={forceRefresh}
-                tintColor="#FF3737"
-                colors={['#FF3737']}
-              />
-            }
-          />
-        </View>
+        <GestureHandlerRootView>
+          <View style={styles.gestureContainer}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={<Text style={styles.title}>Журнал верификаций</Text>}
+              data={historyData}
+              keyExtractor={(item) => item.id + Math.random()}
+              renderItem={({ item }) => <DocumentCard document={item} />}
+              contentContainerStyle={styles.listContent}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              refreshControl={
+                <RefreshControl
+                  refreshing={historyLoading}
+                  onRefresh={forceRefresh}
+                  tintColor="#FF3737"
+                  colors={['#FF3737']}
+                />
+              }
+            />
+          </View>
+        </GestureHandlerRootView>
       )}
     </SafeAreaView>
   );
@@ -57,6 +59,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#121212',
     paddingTop: 15,
+  },
+  gestureContainer: {
+    flex: 1,
   },
   logoView: {
     alignItems: 'center',
@@ -78,7 +83,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   listContent: {
-    paddingHorizontal: 16,
+    flexGrow: 1,
     paddingBottom: 180,
   },
   separator: {

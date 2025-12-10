@@ -1,50 +1,161 @@
-# Welcome to your Expo app 👋
+# Hackaton ITech 2025 📱
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Мобильное приложение для сканирования и верификации документов.
 
-## Get started
+## Технологии
 
-1. Install dependencies
+- **React Native** - Кроссплатформенная разработка
+- **Expo** - Фреймворк для React Native
+- **TypeScript** - Типизированный JavaScript
+- **Redux Toolkit** - Управление состоянием
+- **Expo Router** - Файловая маршрутизация
+- **Expo Camera** - Работа с камерой
+- **Expo Local Authentication** - Биометрическая аутентификация
 
-   ```bash
-   npm install
-   ```
+## Возможности
 
-2. Start the app
+- Аутентификация с биометрией (Face ID/Touch ID)
+- Сканирование документов через камеру
+- История сканирований
+- Push-уведомления
 
-   ```bash
-   npx expo start
-   ```
+## Установка и запуск
 
-In the output, you'll find options to open the app in a
+### Предварительные требования
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Node.js (версия 18 или выше)
+- npm или yarn
+- Expo CLI
+- Android Studio (для Android) или Xcode (для iOS)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Установка зависимостей
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Запуск в режиме разработки
 
-## Learn more
+```bash
+npm start
+# или
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### Запуск на устройствах
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+# Android
+npm run android
+# или
+npx expo run:android
 
-## Join the community
+# iOS
+npm run ios
+# или
+npx expo run:ios
 
-Join our community of developers creating universal apps.
+# Web
+npm run web
+# или
+npx expo start --web
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Линтинг кода
+
+```bash
+npm run lint
+```
+
+## Структура проекта
+
+```
+hackaton_Itech_2025/
+├── app/                          # Экраны приложения (Expo Router)
+│   ├── (auth)/                   # Группа экранов аутентификации
+│   │   ├── greeting.tsx          # Экран приветствия
+│   │   ├── login.tsx             # Экран входа
+│   │   └── registration.tsx      # Экран регистрации
+│   ├── (root)/                   # Основные экраны
+│   │   ├── (tabs)/               # Табы навигации
+│   │   │   ├── home.tsx          # Главный экран
+│   │   │   └── history.tsx       # История сканирований
+│   │   ├── answer.tsx            # Результат сканирования
+│   │   ├── notifications.tsx     # Уведомления
+│   │   └── scan.tsx              # Экран сканирования
+│   └── _layout.tsx               # Корневой layout
+├── features/                     # Функциональные модули
+│   ├── auth/                     # Модуль аутентификации
+│   │   ├── hooks/                # React хуки
+│   │   ├── services/             # API сервисы
+│   │   ├── storage/              # Локальное хранилище
+│   │   ├── store/                # Redux слайсы
+│   │   └── types/                # TypeScript типы
+│   ├── biometrics/               # Биометрическая аутентификация
+│   ├── notifications/            # Push-уведомления
+│   ├── scanning/                 # Сканирование документов
+│   └── shared/                   # Общие компоненты и утилиты
+├── assets/                       # Статические ресурсы
+│   ├── animations/               # Lottie анимации
+│   ├── fonts/                    # Шрифты
+│   └── images/                   # Изображения и иконки
+├── store/                        # Конфигурация Redux
+├── api/                          # API конфигурация
+```
+
+## Конфигурация
+
+### Основные файлы конфигурации
+
+- **`app.json`** - Конфигурация Expo
+- **`package.json`** - Зависимости и скрипты
+- **`tsconfig.json`** - Настройки TypeScript
+- **`eslint.config.js`** - Правила линтинга
+- **`.prettierrc.js`** - Форматирование кода
+
+### Разрешения
+
+Приложение требует следующие разрешения:
+
+- **Камера** - для сканирования документов
+- **Биометрия** - для безопасной аутентификации
+- **Интернет** - для API запросов
+
+## Архитектура
+
+Проект использует **Feature-Sliced Design** архитектуру:
+
+- **app/** - Экраны и маршрутизация
+- **features/** - Бизнес-логика по функциям
+- **shared/** - Переиспользуемые компоненты
+- **store/** - Глобальное состояние
+
+## Безопасность
+
+- Биометрическая аутентификация
+- Безопасное хранение токенов (Expo Secure Store)
+- Валидация данных на клиенте и сервере
+
+## Поддерживаемые платформы
+
+- iOS (iPhone/iPad)
+- Android
+- Web (PWA)
+
+## Разработка
+
+### Стиль кода
+
+Проект использует:
+
+- ESLint для проверки кода
+- Prettier для форматирования
+- TypeScript для типизации
+
+### Git hooks
+
+Настроены автоматические проверки перед коммитом с помощью Husky.
+
+## Команда
+
+Разработано командой для хакатона ITech 2025.
