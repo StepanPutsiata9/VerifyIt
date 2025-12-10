@@ -1,4 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useScan } from '@/features/scanning';
+import { useRouter } from 'expo-router';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useHistory } from '../hooks';
 import { IDocumentInfo } from '../types';
 
@@ -7,8 +9,15 @@ interface DocumentCardProps {
 }
 export const DocumentCard = ({ document }: DocumentCardProps) => {
   const { formatDate, getDocumentTypeName } = useHistory();
+  const { setDataScan } = useScan();
+  const router = useRouter();
+  const handlePress = () => {
+    setDataScan(document);
+    router.push('/(root)/answer');
+  };
   return (
-    <View
+    <TouchableOpacity
+      onPress={handlePress}
       style={[
         styles.container,
         // eslint-disable-next-line react-native/no-inline-styles
@@ -30,7 +39,7 @@ export const DocumentCard = ({ document }: DocumentCardProps) => {
         <Text style={styles.field}>Тип: {getDocumentTypeName(document.type)}</Text>
         <Text style={styles.field}>Автор: {document.author}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

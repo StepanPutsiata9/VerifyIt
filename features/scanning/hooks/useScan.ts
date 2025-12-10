@@ -1,7 +1,8 @@
+import { IDocumentInfo } from '@/features/biometrics/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
-import { clearScanningData, getQrInfo } from '../store/scanning.slice';
+import { clearScanningData, getQrInfo, setScanningData } from '../store/scanning.slice';
 import { DocumentType } from '../types/';
 export const useScan = () => {
   const router = useRouter();
@@ -26,7 +27,6 @@ export const useScan = () => {
 
     try {
       await dispatch(getQrInfo(data));
-
       setCameraVisible(false);
       setTimeout(() => {
         router.push('/(root)/answer');
@@ -37,13 +37,7 @@ export const useScan = () => {
       setCameraVisible(false);
 
       setTimeout(() => {
-        router.push({
-          pathname: '/(root)/answer',
-          params: {
-            qrData: data,
-            error: error instanceof Error ? error.message : 'Unknown error',
-          },
-        });
+        router.push('/(root)/answer');
       }, 200);
     } finally {
       setIsProcessing(false);
@@ -72,7 +66,9 @@ export const useScan = () => {
       year: 'numeric',
     });
   };
-
+  const setDataScan = (doc: IDocumentInfo) => {
+    dispatch(setScanningData(doc));
+  };
   const typeMap: Record<DocumentType, string> = {
     CONTRACT: 'Договор',
     INNOVICE: 'Счёт-фактура',
@@ -104,5 +100,6 @@ export const useScan = () => {
     clearAllData: clearAllData,
     formatDate: formatDate,
     getDocumentTypeName: getDocumentTypeName,
+    setDataScan: setDataScan,
   };
 };

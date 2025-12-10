@@ -6,6 +6,17 @@ export const useHistory = () => {
   const dispatch = useAppDispatch();
   const { historyData, historyLoading } = useAppSelector((state) => state.history);
   const loadHistory = useCallback(async () => {
+    // Only load if we don't have data already
+    if (!historyData || historyData.length === 0) {
+      try {
+        dispatch(getHistoryArray());
+      } catch (error) {
+        console.error('Error loading movies list:', error);
+      }
+    }
+  }, [dispatch, historyData]);
+
+  const forceRefresh = useCallback(async () => {
     try {
       dispatch(getHistoryArray());
     } catch (error) {
@@ -43,6 +54,7 @@ export const useHistory = () => {
   };
   return {
     loadHistory: loadHistory,
+    forceRefresh: forceRefresh,
     historyData: historyData,
     historyLoading: historyLoading,
     formatDate: formatDate,

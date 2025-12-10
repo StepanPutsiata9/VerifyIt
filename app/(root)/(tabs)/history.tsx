@@ -1,11 +1,11 @@
 import { BiometricGuard, DocumentCard, useHistory } from '@/features/biometrics/';
 import { AppLogo } from '@/features/shared';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ProtectedContent = () => {
-  const { loadHistory, historyData, historyLoading } = useHistory();
+  const { loadHistory, forceRefresh, historyData, historyLoading } = useHistory();
   useEffect(() => {
     loadHistory();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -29,6 +29,14 @@ const ProtectedContent = () => {
             renderItem={({ item }) => <DocumentCard document={item} />}
             contentContainerStyle={styles.listContent}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
+            refreshControl={
+              <RefreshControl
+                refreshing={historyLoading}
+                onRefresh={forceRefresh}
+                tintColor="#FF3737"
+                colors={['#FF3737']}
+              />
+            }
           />
         </View>
       )}

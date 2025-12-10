@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+// Global authentication cache
+let authCache: { isAuthenticated: boolean; timestamp: number } | null = null;
+const AUTH_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 interface BiometricGuardProps {
   children: React.ReactNode;
 }
@@ -39,6 +43,8 @@ const BiometricGuard: React.FC<BiometricGuardProps> = ({ children }) => {
 
       if (authResult.success) {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        // Cache successful authentication
+        authCache = { isAuthenticated: true, timestamp: Date.now() };
         setIsAuthenticated(true);
       } else {
         await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -53,7 +59,13 @@ const BiometricGuard: React.FC<BiometricGuardProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    authenticate();
+    // Check if we have a valid cached authentication
+    if (authCache && Date.now() - authCache.timestamp < AUTH_CACHE_DURATION && authCache.isAuthenticated) {
+      setIsAuthenticated(true);
+      setIsLoading(false);
+    } else {
+      authenticate();
+    }
   }, []);
 
   if (isLoading) {
