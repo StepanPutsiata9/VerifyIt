@@ -17,18 +17,20 @@ const ProtectedContent = () => {
         <Text style={styles.appTitle}>VerifyIt</Text>
       </View>
 
-      <Text style={styles.title}>Журнал верификаций</Text>
-
       {historyLoading ? (
         <ActivityIndicator size="large" color="#FF3737" style={styles.loader} />
       ) : (
-        <FlatList
-          data={historyData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <DocumentCard document={item} />}
-          contentContainerStyle={styles.listContent}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-        />
+        <View>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={<Text style={styles.title}>Журнал верификаций</Text>}
+            data={historyData}
+            keyExtractor={(item) => item.id + Math.random()}
+            renderItem={({ item }) => <DocumentCard document={item} />}
+            contentContainerStyle={styles.listContent}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+          />
+        </View>
       )}
     </SafeAreaView>
   );
@@ -65,10 +67,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     textAlign: 'center',
     color: 'white',
-    marginBottom: 8,
+    marginBottom: 16,
   },
   listContent: {
     paddingHorizontal: 16,
+    paddingBottom: 180,
   },
   separator: {
     height: 12,

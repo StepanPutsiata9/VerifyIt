@@ -3,7 +3,7 @@ import Svg, { ClipPath, Defs, G, Path, SvgProps } from 'react-native-svg';
 export const AppLogo = (props: SvgProps) => (
   <Svg width={48} height={48} fill="none" {...props}>
     <G
-      stroke="#FF2424"
+      stroke="#FF3737"
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={3}

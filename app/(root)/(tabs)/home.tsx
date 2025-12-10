@@ -9,7 +9,7 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.appBar}>
-        <View></View>
+        {/* <View></View> */}
         <View style={styles.logoView}>
           <AppLogo />
           <Text style={styles.appTitle}>VerifyIt</Text>
@@ -51,13 +51,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   appBar: {
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
   },
   logout: {
-    justifyContent: 'flex-end',
+    position: 'absolute',
+    right: 16,
   },
 });
 export default HomeScreen;

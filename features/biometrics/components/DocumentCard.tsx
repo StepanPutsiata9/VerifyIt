@@ -6,7 +6,7 @@ interface DocumentCardProps {
   document: IDocumentInfo;
 }
 export const DocumentCard = ({ document }: DocumentCardProps) => {
-  const { formatDate } = useHistory();
+  const { formatDate, getDocumentTypeName } = useHistory();
   return (
     <View
       style={[
@@ -27,8 +27,8 @@ export const DocumentCard = ({ document }: DocumentCardProps) => {
         <Text style={styles.date}>{formatDate(document.createdAt)}</Text>
       </View>
       <View style={styles.lastLine}>
-        <Text style={styles.field}>Тип {document.type}</Text>
-        <Text style={styles.field}>Автор {document.name}</Text>
+        <Text style={styles.field}>Тип: {getDocumentTypeName(document.type)}</Text>
+        <Text style={styles.field}>Автор: {document.author}</Text>
       </View>
     </View>
   );
@@ -38,10 +38,10 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     backgroundColor: '#242424',
-    borderRadius: 10,
+    borderRadius: 16,
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderLeftWidth: 4,
+    paddingVertical: 16,
+    borderLeftWidth: 6,
   },
   firstLine: {
     flexDirection: 'row',
