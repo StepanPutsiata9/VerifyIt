@@ -1,6 +1,19 @@
 import { clearTokens, getTokens, storeTokens } from '@/features/auth/storage';
 import axios from 'axios';
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const exponentialBackoff = async (fn: () => Promise<any>, maxRetries = 3) => {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      if (i === maxRetries - 1 || error.response?.status < 500) throw error;
+      await sleep(Math.pow(2, i) * 1000);
+    }
+  }
+};
+
 export const api = axios.create({
   baseURL: 'https://verifyit-backend-frhc.onrender.com/',
 });
@@ -25,6 +38,7 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const tokens = await getTokens();
+    
     if (error.response?.status === 403) {
       if (onLogoutCallback) {
         onLogoutCallback();
@@ -35,16 +49,15 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && tokens?.refreshToken && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const response = await axios.post(
-          'https://verifyit-backend-frhc.onrender.com/auth/refresh',
-          {
+        const response = await exponentialBackoff(() => 
+          axios.post('https://verifyit-backend-frhc.onrender.com/auth/refresh', {
             refreshToken: tokens.refreshToken,
-          }
+          })
         );
         const { accessToken, refreshToken } = response.data;
         await storeTokens({ accessToken, refreshToken });
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return axios(originalRequest);
+        return exponentialBackoff(() => axios(originalRequest));
       } catch (refreshError) {
         await clearTokens();
         if (onLogoutCallback) {
@@ -59,6 +72,11 @@ api.interceptors.response.use(
         onLogoutCallback();
       }
       return { data: null };
+    }
+
+    if (error.response?.status >= 500 && !originalRequest._retried) {
+      originalRequest._retried = true;
+      return exponentialBackoff(() => axios(originalRequest));
     }
 
     return Promise.reject(error);

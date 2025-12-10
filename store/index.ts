@@ -1,6 +1,7 @@
 import { setOnLogoutCallback } from '@/api';
 import authReducer, { logout } from '@/features/auth/store/auth.slice';
 import historyReducer from '@/features/biometrics/store/history.slice';
+import notificationsReducer from '@/features/notifications/store/notifications.slice';
 import scanningReducer from '@/features/scanning/store/scanning.slice';
 import { configureStore } from '@reduxjs/toolkit';
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
     auth: authReducer,
     scanning: scanningReducer,
     history: historyReducer,
+    notifications: notificationsReducer,
   },
 });
 setOnLogoutCallback(() => {

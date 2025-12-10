@@ -1,9 +1,9 @@
-import { IDocumentInfo } from '@/features/biometrics/types';
+// import { IDocumentInfo } from '@/features/biometrics/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useRouter } from 'expo-router';
 import { useRef, useState } from 'react';
 import { clearScanningData, getQrInfo, setScanningData } from '../store/scanning.slice';
-import { DocumentType } from '../types/';
+import { DocumentType, IDocumentInfo } from '../types/';
 export const useScan = () => {
   const router = useRouter();
   const { scanningLoading, scanningData, scanningError } = useAppSelector(

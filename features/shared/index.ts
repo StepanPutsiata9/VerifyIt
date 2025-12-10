@@ -7,6 +7,7 @@ export {
   GalleryLogo,
   GoodBanner,
   GreetingBanner,
+  Notifications,
   RegistrationBanner,
   ScannerLogo,
   WarningBanner,

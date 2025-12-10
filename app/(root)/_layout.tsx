@@ -10,15 +10,8 @@ export default function MainLayout() {
     >
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="answer" />
-      <Stack.Screen
-        name="scan"
-        // options={{
-        //   headerShown: false,
-        //   presentation: 'modal',
-        //   contentStyle: { backgroundColor: '#121212' },
-        //   animation: 'fade',
-        // }}
-      />
+      <Stack.Screen name="scan" />
+      <Stack.Screen name="notifications" />
     </Stack>
   );
 }

@@ -70,7 +70,21 @@ export const Camera: React.FC<CameraViewProps> = ({
           autofocus="on"
           onBarcodeScanned={scanned || isLoading ? undefined : handleBarCodeScanned}
           barcodeScannerSettings={{
-            barcodeTypes: ['qr', 'pdf417'],
+            barcodeTypes: [
+              'qr',
+              'pdf417',
+              'aztec',
+              'datamatrix',
+              'ean13',
+              'ean8',
+              'upc_e',
+              'code39',
+              'code93',
+              'itf14',
+              'codabar',
+              'code128',
+              'upc_a',
+            ],
           }}
         />
 

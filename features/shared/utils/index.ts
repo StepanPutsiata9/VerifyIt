@@ -10,6 +10,7 @@ export {
   GalleryLogo,
   InActiveHistory,
   InActiveHome,
+  Notifications,
   ScannerLogo,
 } from './icons';
 export { RegistrationBanner } from './RegistrationBanner';

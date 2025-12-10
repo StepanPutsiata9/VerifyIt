@@ -1,15 +1,22 @@
 import { useAuth } from '@/features/auth';
 import { ScanningButton, UploadFromGalleryButton } from '@/features/scanning';
-import { AppLogo } from '@/features/shared';
+import { AppLogo, Notifications } from '@/features/shared';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useRouter } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 const HomeScreen = () => {
   const { handleLogoutPress } = useAuth();
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.appBar}>
-        {/* <View></View> */}
+        <TouchableOpacity
+          style={styles.notifications}
+          onPress={() => router.navigate('/(root)/notifications')}
+        >
+          <Notifications />
+        </TouchableOpacity>
         <View style={styles.logoView}>
           <AppLogo />
           <Text style={styles.appTitle}>VerifyIt</Text>
@@ -55,6 +62,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  notifications: {
+    position: 'absolute',
+    left: 16,
   },
   logout: {
     position: 'absolute',
